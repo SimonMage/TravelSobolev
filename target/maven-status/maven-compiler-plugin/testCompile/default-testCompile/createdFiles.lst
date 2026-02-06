@@ -1,0 +1,8 @@
+com\sobolev\travel\integration\GeographyIntegrationTest.class
+com\sobolev\travel\security\SecurityIntegrationTest.class
+com\sobolev\travel\controller\TripControllerTest.class
+com\sobolev\travel\integration\TripIntegrationTest.class
+com\sobolev\travel\controller\CityControllerTest.class
+com\sobolev\travel\controller\AuthControllerTest.class
+com\sobolev\travel\service\CityServiceTest.class
+com\sobolev\travel\service\AuthServiceTest.class
