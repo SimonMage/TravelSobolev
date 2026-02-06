@@ -1,7 +1,12 @@
 package com.sobolev.travel.dto.poi;
 
+import java.time.LocalDateTime;
+
 public record PoiDto(
-    String externalId,
+    Integer id,
     String name,
-    Object rawJson
+    String description,
+    Double latitude,
+    Double longitude,
+    LocalDateTime createdAt
 ) {}

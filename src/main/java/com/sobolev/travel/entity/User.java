@@ -40,6 +40,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SearchHistory> searchHistory = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Poi> pois = new ArrayList<>();
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -108,5 +111,13 @@ public class User {
 
     public void setSearchHistory(List<SearchHistory> searchHistory) {
         this.searchHistory = searchHistory;
+    }
+
+    public List<Poi> getPois() {
+        return pois;
+    }
+
+    public void setPois(List<Poi> pois) {
+        this.pois = pois;
     }
 }

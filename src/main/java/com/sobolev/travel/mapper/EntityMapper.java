@@ -154,40 +154,29 @@ public class EntityMapper {
      * @return il corrispondente TripStopDto
      */
     public TripStopDto toTripStopDto(TripStop stop) {
-        List<PoiDto> pois = stop.getPois() != null
-            ? stop.getPois().stream().map(this::toPoiDto).toList()
-            : Collections.emptyList();
-
         return new TripStopDto(
             stop.getStopName(),
             stop.getCity().getName(),
             stop.getCity().getRegion().getName(),
             stop.getStopDate(),
-            stop.getNotes(),
-            pois
+            stop.getNotes()
         );
     }
 
     /**
      * Converte un'entity Poi in un PoiDto.
      *
-     * Nota: in caso di errore nel parsing di rawJson, viene utilizzato il valore originale come fallback.
-     *
      * @param poi l'entity Poi da convertire
      * @return il corrispondente PoiDto
      */
     public PoiDto toPoiDto(Poi poi) {
-        Object rawJson = null;
-        try {
-            rawJson = objectMapper.readValue(poi.getRawJson(), Object.class);
-        } catch (JsonProcessingException e) {
-            rawJson = poi.getRawJson();
-        }
-
         return new PoiDto(
-            poi.getExternalId(),
+            poi.getId(),
             poi.getName(),
-            rawJson
+            poi.getDescription(),
+            poi.getLatitude(),
+            poi.getLongitude(),
+            poi.getCreatedAt()
         );
     }
 }

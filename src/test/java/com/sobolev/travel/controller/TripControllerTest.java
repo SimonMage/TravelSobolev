@@ -63,7 +63,7 @@ class TripControllerTest {
             1, "Test Trip",
             LocalDate.of(2024, 6, 1),
             LocalDate.of(2024, 6, 10),
-            List.of(new TripStopDto("Test Stop", "Roma", "Lazio", LocalDate.of(2024, 6, 5), "Notes", Collections.emptyList()))
+            List.of(new TripStopDto("Test Stop", "Roma", "Lazio", LocalDate.of(2024, 6, 5), "Notes"))
         );
     }
 

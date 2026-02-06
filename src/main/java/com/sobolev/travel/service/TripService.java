@@ -1,9 +1,6 @@
 package com.sobolev.travel.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sobolev.travel.dto.poi.PoiCreateRequest;
-import com.sobolev.travel.dto.poi.PoiDto;
 import com.sobolev.travel.dto.trip.*;
 import com.sobolev.travel.entity.*;
 import com.sobolev.travel.exception.BadRequestException;
@@ -18,21 +15,17 @@ import java.io.StringWriter;
 import java.util.List;
 
 /**
- * Servizio che gestisce la logica di business per i viaggi (Trip), le tappe (TripStop)
- * e i POI associati.
+ * Servizio che gestisce la logica di business per i viaggi (Trip) e le tappe (TripStop).
  *
  * Responsabilità principali:
  * - CRUD sui viaggi per utente (creazione, aggiornamento, cancellazione, lista)
  * - Aggiunta/aggiornamento/rimozione delle tappe di un viaggio
- * - Associazione di POI a una tappa (creazione del POI se non esiste)
  * - Esportazione di un viaggio in formato CSV
  *
  * Motivazioni progettuali e scelte:
  * - Le operazioni sono transazionali per garantire coerenza (ad es. aggiunta di tappa e salvataggio del viaggio).
  * - Alcune query (definite nei repository) usano LEFT JOIN FETCH per evitare problemi N+1 quando si serializzano DTO.
  * - Vengono fatte validazioni sui range di date (start/end del viaggio e date delle tappe) per mantenere invarianti.
- * - I POI esterni sono identificati tramite `externalId`; il servizio salva il raw JSON del POI serializzato
- *   (colonna jsonb in Postgres) per poter ricostruire i dati esterni in futuro.
  */
 @Service
 public class TripService {
@@ -222,49 +215,6 @@ public class TripService {
         tripRepository.save(trip);
     }
 
-    /**
-     * Aggiunge un POI a una tappa. Se il POI non esiste lo crea a partire dai dati forniti
-     * (salvando il rawJson serializzato). Restituisce il DTO del POI.
-     */
-    @Transactional
-    public PoiDto addPoiToStop(String tripName, String stopName, PoiCreateRequest request, Integer userId) {
-        TripStop stop = tripStopRepository.findByStopNameAndTripNameAndUserId(stopName, tripName, userId)
-            .orElseThrow(() -> new ResourceNotFoundException("Stop '" + stopName + "' not found in trip '" + tripName + "'"));
-
-        Poi poi = poiRepository.findByExternalId(request.externalId()).orElse(null);
-
-        if (poi == null) {
-            poi = new Poi();
-            poi.setExternalId(request.externalId());
-            poi.setName(request.name());
-            try {
-                poi.setRawJson(objectMapper.writeValueAsString(request.rawJson()));
-            } catch (JsonProcessingException e) {
-                throw new BadRequestException("Invalid JSON data");
-            }
-            poi = poiRepository.save(poi);
-        }
-
-        stop.addPoi(poi);
-        tripStopRepository.save(stop);
-
-        return mapper.toPoiDto(poi);
-    }
-
-    /**
-     * Rimuove l'associazione di un POI da una tappa.
-     */
-    @Transactional
-    public void removePoiFromStop(String tripName, String stopName, String poiExternalId, Integer userId) {
-        TripStop stop = tripStopRepository.findByStopNameAndTripNameAndUserId(stopName, tripName, userId)
-            .orElseThrow(() -> new ResourceNotFoundException("Stop '" + stopName + "' not found in trip '" + tripName + "'"));
-
-        Poi poi = poiRepository.findByExternalId(poiExternalId)
-            .orElseThrow(() -> new ResourceNotFoundException("POI with external ID '" + poiExternalId + "' not found"));
-
-        stop.removePoi(poi);
-        tripStopRepository.save(stop);
-    }
 
     /**
      * Esporta un viaggio in CSV. Il CSV viene costruito attraversando tutte le tappe
@@ -281,44 +231,25 @@ public class TripService {
     /**
      * Costruisce il CSV da un oggetto Trip. Implementazione semplice e robusta:
      * - Escape delle virgolette
-     * - Righe duplicate per ogni POI della tappa
+     * - Una riga per ogni tappa del viaggio
      */
     private String generateCsvFromTrip(Trip trip) {
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
 
-        pw.println("Trip Name,Start Date,End Date,Stop Name,Stop Date,City,Region,Notes,POI External ID,POI Name");
+        pw.println("Trip Name,Start Date,End Date,Stop Name,Stop Date,City,Region,Notes");
 
         for (TripStop stop : trip.getStops()) {
-            if (stop.getPois().isEmpty()) {
-                pw.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
-                    escapeCSV(trip.getName()),
-                    trip.getStartDate(),
-                    trip.getEndDate(),
-                    escapeCSV(stop.getStopName()),
-                    stop.getStopDate(),
-                    escapeCSV(stop.getCity().getName()),
-                    escapeCSV(stop.getCity().getRegion().getName()),
-                    escapeCSV(stop.getNotes() != null ? stop.getNotes() : ""),
-                    "",
-                    ""
-                );
-            } else {
-                for (Poi poi : stop.getPois()) {
-                    pw.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
-                        escapeCSV(trip.getName()),
-                        trip.getStartDate(),
-                        trip.getEndDate(),
-                        escapeCSV(stop.getStopName()),
-                        stop.getStopDate(),
-                        escapeCSV(stop.getCity().getName()),
-                        escapeCSV(stop.getCity().getRegion().getName()),
-                        escapeCSV(stop.getNotes() != null ? stop.getNotes() : ""),
-                        escapeCSV(poi.getExternalId()),
-                        escapeCSV(poi.getName())
-                    );
-                }
-            }
+            pw.printf("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"%n",
+                escapeCSV(trip.getName()),
+                trip.getStartDate(),
+                trip.getEndDate(),
+                escapeCSV(stop.getStopName()),
+                stop.getStopDate(),
+                escapeCSV(stop.getCity().getName()),
+                escapeCSV(stop.getCity().getRegion().getName()),
+                escapeCSV(stop.getNotes() != null ? stop.getNotes() : "")
+            );
         }
 
         return sw.toString();

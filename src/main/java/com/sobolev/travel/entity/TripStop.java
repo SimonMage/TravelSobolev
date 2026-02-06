@@ -2,13 +2,11 @@ package com.sobolev.travel.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Entità che rappresenta una tappa di un viaggio (TripStop).
  *
- * Contiene il riferimento al Trip, alla City, la data della tappa, note e i POI associati.
+ * Contiene il riferimento al Trip, alla City, la data della tappa e note.
  */
 @Entity
 @Table(name = "trip_stop")
@@ -35,13 +33,6 @@ public class TripStop {
     @Column(columnDefinition = "TEXT")
     private String notes;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-        name = "trip_stop_poi",
-        joinColumns = @JoinColumn(name = "trip_stop_id"),
-        inverseJoinColumns = @JoinColumn(name = "poi_id")
-    )
-    private Set<Poi> pois = new HashSet<>();
 
     // Getters and Setters
     public Integer getId() {
@@ -90,30 +81,5 @@ public class TripStop {
 
     public void setNotes(String notes) {
         this.notes = notes;
-    }
-
-    public Set<Poi> getPois() {
-        return pois;
-    }
-
-    public void setPois(Set<Poi> pois) {
-        this.pois = pois;
-    }
-
-    /**
-     * Aggiunge un POI alla tappa e aggiorna la collezione bidirezionale sul POI.
-     * Usiamo cacade persist/merge per mantenere i POI sincronizzati.
-     */
-    public void addPoi(Poi poi) {
-        pois.add(poi);
-        poi.getTripStops().add(this);
-    }
-
-    /**
-     * Rimuove un POI dalla tappa e aggiorna la collezione bidirezionale sul POI.
-     */
-    public void removePoi(Poi poi) {
-        pois.remove(poi);
-        poi.getTripStops().remove(this);
     }
 }

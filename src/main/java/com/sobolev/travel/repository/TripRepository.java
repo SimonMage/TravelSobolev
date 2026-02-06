@@ -22,8 +22,8 @@ public interface TripRepository extends JpaRepository<Trip, Integer> {
     @Query("SELECT t FROM Trip t LEFT JOIN FETCH t.stops s LEFT JOIN FETCH s.city WHERE t.id = :id")
     Optional<Trip> findByIdWithStops(@Param("id") Integer id);
 
-    // Carica un trip con tutte le tappe, città e anche i POI associati (se autorizzato dall'utente)
-    @Query("SELECT t FROM Trip t LEFT JOIN FETCH t.stops s LEFT JOIN FETCH s.city LEFT JOIN FETCH s.pois WHERE t.id = :id AND t.user.id = :userId")
+    // Carica un trip con tutte le tappe e città associate (se autorizzato dall'utente)
+    @Query("SELECT t FROM Trip t LEFT JOIN FETCH t.stops s LEFT JOIN FETCH s.city WHERE t.id = :id AND t.user.id = :userId")
     Optional<Trip> findByIdAndUserIdWithStopsAndPois(@Param("id") Integer id, @Param("userId") Integer userId);
 
     Optional<Trip> findByIdAndUserId(Integer id, Integer userId);

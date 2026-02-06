@@ -1050,9 +1050,146 @@ curl -X DELETE http://localhost:8080/api/search-history \
 
 ---
 
+## 📍 POI PERSONALIZZATI
+
+### 28. Crea un POI personalizzato
+**Endpoint:** `POST /pois`
+**Autenticazione:** Richiesta
+**Descrizione:** Crea un nuovo punto di interesse personalizzato per l'utente
+
+**Request Body:**
+```json
+{
+  "name": "Ristorante preferito",
+  "description": "Il miglior ristorante di Roma",
+  "latitude": 41.9028,
+  "longitude": 12.4964
+}
+```
+
+**Response:** `201 Created`
+```json
+{
+  "id": 1,
+  "name": "Ristorante preferito",
+  "description": "Il miglior ristorante di Roma",
+  "latitude": 41.9028,
+  "longitude": 12.4964,
+  "createdAt": "2026-02-05T10:15:30"
+}
+```
+
+**Esempio cURL:**
+```bash
+curl -X POST http://localhost:8080/api/pois \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "name": "Ristorante preferito",
+    "description": "Il miglior ristorante di Roma",
+    "latitude": 41.9028,
+    "longitude": 12.4964
+  }'
+```
+
+**Note:**
+- Il campo `name` è obbligatorio e deve essere univoco per l'utente
+- I campi `description`, `latitude` e `longitude` sono opzionali
+- Se esiste già un POI con lo stesso nome per l'utente, viene restituito errore 400
+
+### 29. Ottieni tutti i POI personalizzati
+**Endpoint:** `GET /pois`
+**Autenticazione:** Richiesta
+**Descrizione:** Restituisce tutti i POI personalizzati dell'utente
+
+**Response:** `200 OK`
+```json
+[
+  {
+    "id": 1,
+    "name": "Ristorante preferito",
+    "description": "Il miglior ristorante di Roma",
+    "latitude": 41.9028,
+    "longitude": 12.4964,
+    "createdAt": "2026-02-05T10:15:30"
+  },
+  {
+    "id": 2,
+    "name": "Museo da visitare",
+    "description": "Museo interessante a Milano",
+    "latitude": 45.4642,
+    "longitude": 9.1900,
+    "createdAt": "2026-02-04T14:20:15"
+  }
+]
+```
+
+**Esempio cURL:**
+```bash
+curl http://localhost:8080/api/pois \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### 30. Ottieni un POI specifico
+**Endpoint:** `GET /pois/{poiId}`
+**Autenticazione:** Richiesta
+**Descrizione:** Restituisce un POI personalizzato specifico
+
+**Path Parameters:**
+- `poiId` (integer): ID del POI
+
+**Response:** `200 OK`
+```json
+{
+  "id": 1,
+  "name": "Ristorante preferito",
+  "description": "Il miglior ristorante di Roma",
+  "latitude": 41.9028,
+  "longitude": 12.4964,
+  "createdAt": "2026-02-05T10:15:30"
+}
+```
+
+**Esempio cURL:**
+```bash
+curl http://localhost:8080/api/pois/1 \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### 31. Elimina un POI specifico
+**Endpoint:** `DELETE /pois/{poiId}`
+**Autenticazione:** Richiesta
+**Descrizione:** Elimina un POI personalizzato specifico
+
+**Path Parameters:**
+- `poiId` (integer): ID del POI da eliminare
+
+**Response:** `204 No Content`
+
+**Esempio cURL:**
+```bash
+curl -X DELETE http://localhost:8080/api/pois/1 \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+### 32. Elimina tutti i POI personalizzati
+**Endpoint:** `DELETE /pois`
+**Autenticazione:** Richiesta
+**Descrizione:** Elimina tutti i POI personalizzati dell'utente
+
+**Response:** `204 No Content`
+
+**Esempio cURL:**
+```bash
+curl -X DELETE http://localhost:8080/api/pois \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+---
+
 ## 🏷️ TAG
 
-### 28. Ottieni tutti i tag
+### 33. Ottieni tutti i tag
 **Endpoint:** `GET /tags`
 **Autenticazione:** Non richiesta
 **Descrizione:** Restituisce tutti i tag disponibili per le città

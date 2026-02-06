@@ -5,6 +5,7 @@ C:\Work\Progetto Sobolev\TravelSobolev\src\main\java\com\sobolev\travel\config\W
 C:\Work\Progetto Sobolev\TravelSobolev\src\main\java\com\sobolev\travel\controller\AuthController.java
 C:\Work\Progetto Sobolev\TravelSobolev\src\main\java\com\sobolev\travel\controller\CityController.java
 C:\Work\Progetto Sobolev\TravelSobolev\src\main\java\com\sobolev\travel\controller\CountryController.java
+C:\Work\Progetto Sobolev\TravelSobolev\src\main\java\com\sobolev\travel\controller\PoiController.java
 C:\Work\Progetto Sobolev\TravelSobolev\src\main\java\com\sobolev\travel\controller\RegionController.java
 C:\Work\Progetto Sobolev\TravelSobolev\src\main\java\com\sobolev\travel\controller\SearchHistoryController.java
 C:\Work\Progetto Sobolev\TravelSobolev\src\main\java\com\sobolev\travel\controller\TagController.java
@@ -69,6 +70,7 @@ C:\Work\Progetto Sobolev\TravelSobolev\src\main\java\com\sobolev\travel\service\
 C:\Work\Progetto Sobolev\TravelSobolev\src\main\java\com\sobolev\travel\service\CityService.java
 C:\Work\Progetto Sobolev\TravelSobolev\src\main\java\com\sobolev\travel\service\CountryService.java
 C:\Work\Progetto Sobolev\TravelSobolev\src\main\java\com\sobolev\travel\service\ExternalApiService.java
+C:\Work\Progetto Sobolev\TravelSobolev\src\main\java\com\sobolev\travel\service\PoiService.java
 C:\Work\Progetto Sobolev\TravelSobolev\src\main\java\com\sobolev\travel\service\RegionService.java
 C:\Work\Progetto Sobolev\TravelSobolev\src\main\java\com\sobolev\travel\service\SearchHistoryService.java
 C:\Work\Progetto Sobolev\TravelSobolev\src\main\java\com\sobolev\travel\service\TagService.java

@@ -138,10 +138,10 @@ class TripServiceTest {
         );
 
         when(tripRepository.findByNameAndUserIdIgnoreCase("Test Trip", 1)).thenReturn(Optional.of(testTrip));
-        when(cityRepository.findByNameAndRegion_Name("Roma", "Lazio")).thenReturn(Optional.of(testCity));
+        when(cityRepository.findByCityNameAndRegionNameIgnoreCase("Roma", "Lazio")).thenReturn(Optional.of(testCity));
         when(tripRepository.save(any(Trip.class))).thenReturn(testTrip);
         when(mapper.toTripStopDto(any(TripStop.class))).thenReturn(
-            new TripStopDto("Test Stop", "Roma", "Lazio", LocalDate.of(2024, 6, 5), "Visit the Colosseum", Collections.emptyList())
+            new TripStopDto("Test Stop", "Roma", "Lazio", LocalDate.of(2024, 6, 5), "Visit the Colosseum")
         );
 
         TripStopDto result = tripService.addStop("Test Trip", request, 1);
@@ -189,7 +189,6 @@ class TripServiceTest {
         stop.setCity(testCity);
         stop.setStopDate(LocalDate.of(2024, 6, 5));
         stop.setNotes("Test notes");
-        stop.setPois(Collections.emptySet());
         testTrip.getStops().add(stop);
 
         when(tripRepository.findByNameAndUserIdIgnoreCase("Test Trip", 1)).thenReturn(Optional.of(testTrip));

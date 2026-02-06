@@ -9,18 +9,18 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 /**
- * Repository per TripStop con query per caricare POI e per verifiche di ownership.
+ * Repository per TripStop con query per caricare dettagli e per verifiche di ownership.
  */
 @Repository
 public interface TripStopRepository extends JpaRepository<TripStop, Integer> {
 
     /**
-     * Restituisce un TripStop dato il suo ID, caricando anche i POI associati.
+     * Restituisce un TripStop dato il suo ID, caricando anche la città associata.
      *
      * @param id L'ID del TripStop da cercare.
      * @return Un Optional contenente il TripStop trovato, o vuoto se non trovato.
      */
-    @Query("SELECT ts FROM TripStop ts LEFT JOIN FETCH ts.pois WHERE ts.id = :id")
+    @Query("SELECT ts FROM TripStop ts LEFT JOIN FETCH ts.city WHERE ts.id = :id")
     Optional<TripStop> findByIdWithPois(@Param("id") Integer id);
 
     /**
@@ -39,13 +39,13 @@ public interface TripStopRepository extends JpaRepository<TripStop, Integer> {
 
     /**
      * Restituisce un TripStop dato il nome della fermata e l'ID del viaggio,
-     * caricando anche i POI e la città associati.
+     * caricando anche la città associata.
      *
      * @param stopName Il nome della fermata da cercare.
      * @param tripId L'ID del viaggio associato.
      * @return Un Optional contenente il TripStop trovato, o vuoto se non trovato.
      */
-    @Query("SELECT ts FROM TripStop ts LEFT JOIN FETCH ts.pois LEFT JOIN FETCH ts.city WHERE LOWER(ts.stopName) = LOWER(:stopName) AND ts.trip.id = :tripId")
+    @Query("SELECT ts FROM TripStop ts LEFT JOIN FETCH ts.city WHERE LOWER(ts.stopName) = LOWER(:stopName) AND ts.trip.id = :tripId")
     Optional<TripStop> findByStopNameAndTripId(@Param("stopName") String stopName, @Param("tripId") Integer tripId);
 
     /**
@@ -57,6 +57,6 @@ public interface TripStopRepository extends JpaRepository<TripStop, Integer> {
      * @param userId L'ID dell'utente proprietario del viaggio.
      * @return Un Optional contenente il TripStop trovato, o vuoto se non trovato.
      */
-    @Query("SELECT ts FROM TripStop ts LEFT JOIN FETCH ts.pois LEFT JOIN FETCH ts.city JOIN ts.trip t WHERE LOWER(ts.stopName) = LOWER(:stopName) AND LOWER(t.name) = LOWER(:tripName) AND t.user.id = :userId")
+    @Query("SELECT ts FROM TripStop ts LEFT JOIN FETCH ts.city JOIN ts.trip t WHERE LOWER(ts.stopName) = LOWER(:stopName) AND LOWER(t.name) = LOWER(:tripName) AND t.user.id = :userId")
     Optional<TripStop> findByStopNameAndTripNameAndUserId(@Param("stopName") String stopName, @Param("tripName") String tripName, @Param("userId") Integer userId);
 }

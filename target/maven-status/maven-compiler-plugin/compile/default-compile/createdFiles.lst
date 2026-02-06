@@ -47,6 +47,7 @@ com\sobolev\travel\dto\external\GeoApifyPlacesResponse$Datasource.class
 com\sobolev\travel\dto\external\CitySearchResult.class
 com\sobolev\travel\dto\geography\RegionDto.class
 com\sobolev\travel\dto\external\GeoApifyPlacesResponse$Geometry.class
+com\sobolev\travel\service\PoiService.class
 com\sobolev\travel\dto\user\UserProfileDto.class
 com\sobolev\travel\dto\trip\TripUpdateRequest.class
 com\sobolev\travel\exception\ResourceNotFoundException.class
@@ -70,6 +71,7 @@ com\sobolev\travel\repository\TripStopRepository.class
 com\sobolev\travel\repository\UserRepository.class
 com\sobolev\travel\dto\external\GeoApifyGeocodingResponse$Result.class
 com\sobolev\travel\dto\external\GeoApifyGeocodingResponse$Bbox.class
+com\sobolev\travel\controller\PoiController.class
 com\sobolev\travel\entity\User.class
 com\sobolev\travel\service\UserService.class
 com\sobolev\travel\config\SecurityConfig.class

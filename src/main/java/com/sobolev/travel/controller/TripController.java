@@ -132,29 +132,4 @@ public class TripController {
         tripService.deleteStop(tripName, stopName, userDetails.getId());
         return ResponseEntity.noContent().build();
     }
-
-    // POI endpoints
-    @PostMapping("/{tripName}/stops/{stopName}/pois")
-    @Operation(summary = "Add a POI to a trip stop by trip name and stop name")
-    public ResponseEntity<PoiDto> addPoiToStop(
-            @PathVariable String tripName,
-            @PathVariable String stopName,
-            @Valid @RequestBody PoiCreateRequest request,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        // Aggiunge un POI a una tappa di un viaggio
-        PoiDto poi = tripService.addPoiToStop(tripName, stopName, request, userDetails.getId());
-        return ResponseEntity.status(HttpStatus.CREATED).body(poi);
-    }
-
-    @DeleteMapping("/{tripName}/stops/{stopName}/pois/{poiExternalId}")
-    @Operation(summary = "Remove a POI from a trip stop by trip name, stop name and POI external ID")
-    public ResponseEntity<Void> removePoiFromStop(
-            @PathVariable String tripName,
-            @PathVariable String stopName,
-            @PathVariable String poiExternalId,
-            @AuthenticationPrincipal CustomUserDetails userDetails) {
-        // Rimuove un POI da una tappa di un viaggio
-        tripService.removePoiFromStop(tripName, stopName, poiExternalId, userDetails.getId());
-        return ResponseEntity.noContent().build();
-    }
 }

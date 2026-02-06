@@ -1,15 +1,14 @@
 package com.sobolev.travel.entity;
 
 import jakarta.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 /**
- * Entità JPA che rappresenta un Point Of Interest (POI) esterno.
+ * Entità JPA che rappresenta un Point Of Interest (POI) personalizzato dell'utente.
  *
- * Contiene un `externalId` usato per mappare la risorsa esterna e `rawJson` per
- * conservare la risposta grezza del provider esterno (colonna jsonb in Postgres).
- * La mappatura ManyToMany con `TripStop` permette riutilizzo dei POI in più viaggi.
+ * Salva i punti di interesse che l'utente ha definito manualmente, con nome,
+ * descrizione e coordinate geografiche opzionali.
+ * Ogni POI è associato a un utente specifico.
  */
 @Entity
 @Table(name = "poi")
@@ -19,17 +18,29 @@ public class Poi {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "external_id", length = 100, nullable = false, unique = true)
-    private String externalId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String name;
 
-    @Column(name = "raw_json", columnDefinition = "jsonb", nullable = false)
-    private String rawJson;
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
-    @ManyToMany(mappedBy = "pois", fetch = FetchType.LAZY)
-    private Set<TripStop> tripStops = new HashSet<>();
+    @Column
+    private Double latitude;
+
+    @Column
+    private Double longitude;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+    }
 
     // Getters and Setters
     public Integer getId() {
@@ -40,12 +51,12 @@ public class Poi {
         this.id = id;
     }
 
-    public String getExternalId() {
-        return externalId;
+    public User getUser() {
+        return user;
     }
 
-    public void setExternalId(String externalId) {
-        this.externalId = externalId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getName() {
@@ -56,19 +67,35 @@ public class Poi {
         this.name = name;
     }
 
-    public String getRawJson() {
-        return rawJson;
+    public String getDescription() {
+        return description;
     }
 
-    public void setRawJson(String rawJson) {
-        this.rawJson = rawJson;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public Set<TripStop> getTripStops() {
-        return tripStops;
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public void setTripStops(Set<TripStop> tripStops) {
-        this.tripStops = tripStops;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }
